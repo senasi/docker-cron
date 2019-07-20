@@ -8,7 +8,7 @@ commands:
     steps:
       - run:
           name: Build image
-          command: docker build -t senasi/cron:<< parameters.tag >>
+          command: docker build -t senasi/cron:<< parameters.tag >> .
       - run:
           name: Push image
           command: docker push senasi/cron:<< parameters.tag >>
