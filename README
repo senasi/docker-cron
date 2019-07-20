@@ -1,0 +1,4 @@
+# How to use
+
+Bind mount (ideally read-only) crontab file to `/etc/crontabs/nobody`
+

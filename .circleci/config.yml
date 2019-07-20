@@ -1,0 +1,36 @@
+version: 2.1
+
+commands:
+  build_and_push_docker_image:
+    parameters:
+      tag:
+        type: string
+    steps:
+      - run:
+          name: Build image
+          command: docker build -t senasi/cron:<< parameters.tag >>
+      - run:
+          name: Push image
+          command: docker push senasi/cron:<< parameters.tag >>
+      - run:
+          name: Push latest
+          command: docker tag senasi/cron:<< parameters.tag >> senasi/cron:latest && docker push senasi/cron:latest
+         
+jobs:
+  build:
+    machine:
+      docker_layer_caching: true
+    filters:
+      tags:
+         only: /.*/
+      branches:
+        ignore: /.*/
+    steps:
+      - checkout
+      - run:
+          name: Docker hub login
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+      - build_and_push_docker_image:
+          tag: ${CIRCLE_TAG}
+
