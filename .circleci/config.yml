@@ -1,24 +1,5 @@
 version: 2.1
 
-commands:
-  build_and_push_docker_image:
-    parameters:
-      tag:
-        type: string
-    steps:
-      - run:
-          name: Build image
-          command: docker build -t senasi/cron:<< parameters.tag >> .
-      - run:
-          name: Push image
-          command: docker push senasi/cron:<< parameters.tag >>
-      - run:
-          name: Push major tag image
-          command: MAJOR_TAG=`echo "${CIRCLE_TAG}" | sed -nre 's/^[^0-9]*(([0-9]+\.)?[0-9]+).*/\1/p'` && docker push senasi/cron:${MAJOR_TAG}
-      - run:
-          name: Push latest
-          command: docker tag senasi/cron:<< parameters.tag >> senasi/cron:latest && docker push senasi/cron:latest
-         
 jobs:
   build:
     machine:
@@ -29,8 +10,23 @@ jobs:
           name: Docker hub login
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-      - build_and_push_docker_image:
-          tag: ${CIRCLE_TAG}
+      - run:
+          name: Build image
+          command: docker build -t senasi/cron:${CIRCLE_TAG} .
+      - run:
+          name: Push image
+          command: docker push senasi/cron:${CIRCLE_TAG}
+      - run:
+          name: Push major tag image
+          command: |
+            MAJOR_TAG=`echo "${CIRCLE_TAG}" | sed -nre 's/^[^0-9]*(([0-9]+\.)?[0-9]+).*/\1/p'`
+            docker tag senasi/cron:${CIRCLE_TAG} senasi/cron:${MAJOR_TAG}
+            docker push senasi/cron:${MAJOR_TAG}
+      - run:
+          name: Push latest
+          command: |
+            docker tag senasi/cron:${CIRCLE_TAG} senasi/cron:latest
+            docker push senasi/cron:latest
 
 workflows:
   version: 2
