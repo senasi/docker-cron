@@ -1,4 +1,4 @@
-FROM alpine:3.10.1
+FROM alpine:3.11.2
 
 RUN apk add --no-cache curl gawk jq && \
     echo "" > /etc/crontabs/root
