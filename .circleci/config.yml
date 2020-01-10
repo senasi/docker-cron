@@ -14,7 +14,7 @@ commands:
           command: docker push senasi/cron:<< parameters.tag >>
       - run:
           name: Push major tag image
-          command: MAJOR_TAG=`echo "${CIRCLE_TAG}" | sed -nre 's/^[^0-9]*(([0-9]+\.)?[0-9]+).*/\1/p'` && docker push senasi/cron:${MAJOR_TAG}<< parameters.sufix >>
+          command: MAJOR_TAG=`echo "${CIRCLE_TAG}" | sed -nre 's/^[^0-9]*(([0-9]+\.)?[0-9]+).*/\1/p'` && docker push senasi/cron:${MAJOR_TAG}
       - run:
           name: Push latest
           command: docker tag senasi/cron:<< parameters.tag >> senasi/cron:latest && docker push senasi/cron:latest
