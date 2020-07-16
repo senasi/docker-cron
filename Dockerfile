@@ -1,6 +1,6 @@
-FROM alpine:3.11.2
+FROM alpine:3.12.0
 
-RUN apk add --no-cache curl gawk jq && \
+RUN apk add --no-cache coreutils curl gawk jq && \
     echo "" > /etc/crontabs/root
 
 COPY fetch.sh /
